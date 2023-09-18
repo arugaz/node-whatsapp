@@ -36,7 +36,8 @@ import {
 	isJidUser,
 	jidDecode,
 	jidNormalizedUser,
-	S_WHATSAPP_NET
+	S_WHATSAPP_NET,
+	getBinaryNodeChildString
 } from '../WABinary'
 import { extractGroupMetadata } from './groups'
 import { makeMessagesSocket } from './messages-send'
@@ -299,6 +300,11 @@ export const makeMessagesRecvSocket = (config: SocketConfig) => {
 		case 'invite':
 			msg.messageStubType = WAMessageStubType.GROUP_CHANGE_INVITE_LINK
 			msg.messageStubParameters = [ child.attrs.code ]
+			break
+		case 'description':
+			msg.messageStubType = WAMessageStubType.GROUP_CHANGE_DESCRIPTION
+			const desc = getBinaryNodeChildString(child, 'body') || ''
+			msg.messageStubParameters = [ child.attrs.id, desc ]
 			break
 		}
 	}
